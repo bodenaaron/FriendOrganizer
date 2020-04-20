@@ -1,4 +1,6 @@
-﻿using FriendOrganizer.UI.Data;
+﻿using Autofac;
+using FriendOrganizer.UI.Data;
+using FriendOrganizer.UI.Startup;
 using FriendOrganizer.UI.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -11,13 +13,16 @@ using System.Windows;
 namespace FriendOrganizer.UI
 {
     /// <summary>
-    /// Interaktionslogik für "App.xaml"
+    /// Startup logik mit autofac
     /// </summary>
     public partial class App : Application
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var mainWindow = new MainWindow(new MainViewModel(new FriendDataService()));
+            var bootstrapper = new Bootstrapper(); //erstellt bootstrapper instanz
+            var container = bootstrapper.Bootstrap();   //holt den Container mit den festgelegten Attributen
+
+            var mainWindow = container.Resolve<MainWindow>(); //Resolver ekennt welche Objekte er erstellen muss, tut das und erstellt das mainWindow =>Autofac
             mainWindow.Show();
         }
     }
