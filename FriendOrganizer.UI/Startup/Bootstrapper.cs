@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using FriendOrganizer.DataAccess;
 using FriendOrganizer.UI.Data;
 using FriendOrganizer.UI.ViewModel;
 using System;
@@ -12,8 +13,11 @@ namespace FriendOrganizer.UI.Startup
     class Bootstrapper
     {
         public IContainer Bootstrap()
-        {
+        {            
             var builder = new ContainerBuilder();
+
+            builder.RegisterType<FriendOrganizerDbContext>().AsSelf();
+
             builder.RegisterType<MainWindow>().AsSelf();    //Gewährt Zugriff auf MainView innerhalb des Containers
             builder.RegisterType<MainViewModel>().AsSelf();
             builder.RegisterType<FriendDataService>().As<IFriendDataService>(); //Wenn IFriendDataService benötigt => Erstellt FriendDataService

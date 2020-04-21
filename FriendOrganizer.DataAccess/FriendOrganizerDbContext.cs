@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizer.DataAccess
 {
-    class FriendOrganizerDbContext:DbContext
+    public class FriendOrganizerDbContext:DbContext
     {
         public FriendOrganizerDbContext() : base("FriendOrganizerDb") { }
 
