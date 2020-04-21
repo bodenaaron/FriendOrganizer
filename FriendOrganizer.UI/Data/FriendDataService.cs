@@ -1,15 +1,27 @@
-﻿using FriendOrganizer.Model;
+﻿using FriendOrganizer.DataAccess;
+using FriendOrganizer.Model;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.Data
 {
     public class FriendDataService : IFriendDataService
     {
-        public IEnumerable<Friend> GetAll()
+        private Func<FriendOrganizerDbContext> contextCreator; //Im Autofac gegistriert, gibt den Typen zurück
+
+        public FriendDataService(Func<FriendOrganizerDbContext> contextCreator) //Wenn der typ generiert wird, übergibt autofac automatisch den Typ
         {
-            //todo: real database
-            yield return new Friend { FirstName = "Aaron", LastName = "Boden" };
-            yield return new Friend { FirstName = "Max", LastName = "Mustermann" };
+            this.contextCreator = contextCreator;
+        }
+        public async Task<List<Friend>> GetAllAsync()
+        {
+            using (var ctx = contextCreator())
+            {
+                return await ctx.Friends.AsNoTracking().ToListAsync();
+        }
         }
     }
 }
