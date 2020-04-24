@@ -2,6 +2,7 @@
 using FriendOrganizer.DataAccess;
 using FriendOrganizer.UI.Data;
 using FriendOrganizer.UI.ViewModel;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,8 @@ namespace FriendOrganizer.UI.Startup
             var builder = new ContainerBuilder();
 
             builder.RegisterType<FriendOrganizerDbContext>().AsSelf();
-            
+
+            builder.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
 
             builder.RegisterType<MainWindow>().AsSelf();    //Gewährt Zugriff auf MainView innerhalb des Containers
             builder.RegisterType<MainViewModel>().AsSelf();
