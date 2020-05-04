@@ -28,9 +28,10 @@ namespace FriendOrganizer.UI.ViewModel
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
 
-        private void OnSaveExecute()
+        private async void OnSaveExecute()
         {
-            throw new NotImplementedException();
+           await dataService.SaveAsync(Friend);
+            eventAggregator.GetEvent<AfterFriendSavedEvent>().Publish(new AfterFriendSavedEventArgs {Id=Friend.Id, DisplayMember=$"{Friend.FirstName} {Friend.LastName}"});
         }
 
         private bool OnSaveCanExecute()
@@ -46,6 +47,16 @@ namespace FriendOrganizer.UI.ViewModel
         public async Task LoadAsync(int friendId)
         {
             Friend = await dataService.GetByIdAsync(friendId);
+        }
+
+        public Task<Friend> GetByIdAsync(int friendId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SaveAsync(Friend friend)
+        {
+            throw new NotImplementedException();
         }
 
         public Friend Friend
