@@ -1,5 +1,6 @@
 ﻿using FriendOrganizer.Model;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,32 +21,17 @@ namespace FriendOrganizer.UI.Wrapper
             get { return GetValue<string>(); }
             set
             {
-                SetValue(value);                
-                ValidateProperty(nameof(FirstName));
+                SetValue(value);                                
             }
         }
-        
-        private void ValidateProperty(string propertyName)
-        {
-            ClearErrors(propertyName);
-            switch (propertyName)
-            {
-                case nameof(FirstName):
-                if(string.Equals(FirstName, "Robot", StringComparison.OrdinalIgnoreCase))
-                    {
-                        AddError(propertyName, "Roboter sind keine gültigen Freunde");
-                    }
-                break;
-            }
-        }
+
 
         public string LastName
         {
             get { return GetValue<string>(); }
             set
             {
-                SetValue(value);
-                ValidateProperty(nameof(FirstName));
+                SetValue(value);                
             }
         }
         public string Email
@@ -53,10 +39,22 @@ namespace FriendOrganizer.UI.Wrapper
             get { return GetValue<string>(); }
             set
             {
-                SetValue(value);
-                ValidateProperty(nameof(FirstName));
+                SetValue(value);                
             }
         }
 
-    }
+        protected override IEnumerable<string> ValidateProperty(string propertyName)
+        {
+            switch (propertyName)
+                 {
+                     case nameof(FirstName):
+                     if(string.Equals(FirstName, "Robot", StringComparison.OrdinalIgnoreCase))
+                         {
+                             yield return "Roboter sind keine gültigen Freunde";
+                         }
+                     break;
+                 }
+            }
+
+        }
 }
