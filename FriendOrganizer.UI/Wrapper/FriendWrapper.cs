@@ -1,14 +1,16 @@
 ﻿using FriendOrganizer.Model;
 using FriendOrganizer.UI.ViewModel;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.Wrapper
 {
-    public class FriendWrapper : ViewModelBase
+    public class FriendWrapper : ViewModelBase, INotifyDataErrorInfo
     {
         public FriendWrapper(Friend model)
         {
@@ -44,6 +46,45 @@ namespace FriendOrganizer.UI.Wrapper
             {
                 Model.Email = value;
                 OnPropertyChanged();
+            }
+        }
+
+        private Dictionary<string, List<string>> errorsByPropertyName = new Dictionary<string, List<string>>();
+
+
+        public bool HasErrors => errorsByPropertyName.Any();
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        public IEnumerable GetErrors(string propertyName)
+        {
+            return errorsByPropertyName.ContainsKey(propertyName) ? errorsByPropertyName[propertyName] : null;
+        }
+
+        private void OnErrorsChanged(string propertyName)
+        {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        private void AddError(string propertyName, string error)
+        {
+            if(!errorsByPropertyName.ContainsKey(propertyName))
+            {
+                errorsByPropertyName[propertyName] = new List<string>();
+            }
+            if (!errorsByPropertyName[propertyName].Contains(error))
+            {
+                errorsByPropertyName[propertyName].Add(error);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        private void ClearErrors(string propertyName)
+        {
+            if (errorsByPropertyName.ContainsKey(propertyName))
+            {
+                errorsByPropertyName.Remove(propertyName);
+                OnErrorsChanged(propertyName);
             }
         }
     }
