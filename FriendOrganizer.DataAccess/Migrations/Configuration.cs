@@ -1,6 +1,5 @@
 ﻿namespace FriendOrganizer.DataAccess.Migrations
 {
-    using FriendOrganizer.Model;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -15,7 +14,7 @@
 
         protected override void Seed(FriendOrganizer.DataAccess.FriendOrganizerDbContext context)
         {
-            context.Friends.AddOrUpdate(f => f.FirstName, new Friend { FirstName = "Aaron", LastName = "Boden" }, new Friend { FirstName = "Max", LastName = "Mustermann" });
+            context.Friends.AddOrUpdate(f => f.FirstName, new Model.Friend { FirstName = "Aaron", LastName = "Boden" });
         }
     }
 }

@@ -25,5 +25,12 @@ namespace FriendOrganizer.UI
             var mainWindow = container.Resolve<MainWindow>(); //Resolver ekennt welche Objekte er erstellen muss, tut das und erstellt das mainWindow =>Autofac
             mainWindow.Show();
         }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+
+
+            e.Handled = true;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using FriendOrganizer.Model;
 using FriendOrganizer.UI.Data;
 using FriendOrganizer.UI.Event;
+using FriendOrganizer.UI.Wrapper;
 using Prism.Commands;
 using Prism.Events;
 using System;
@@ -17,7 +18,26 @@ namespace FriendOrganizer.UI.ViewModel
     {
         private IFriendDataService dataService;
         private IEventAggregator eventAggregator;
-        private Friend friend;
+        private FriendWrapper friend;
+
+        public FriendWrapper Friend
+        {
+            get { return friend; }
+            private set
+            {
+                friend = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand SaveCommand { get; }
+
+        public async Task LoadAsync(int friendId)
+        {
+            var friend = await dataService.GetByIdAsync(friendId);
+
+            Friend = new FriendWrapper(friend);
+        }
 
         public FriendDetailViewModel(IFriendDataService dataService, IEventAggregator eventAggregator)
         {
@@ -30,7 +50,7 @@ namespace FriendOrganizer.UI.ViewModel
 
         private async void OnSaveExecute()
         {
-           await dataService.SaveAsync(Friend);
+           await dataService.SaveAsync(Friend.Model);
             eventAggregator.GetEvent<AfterFriendSavedEvent>().Publish(new AfterFriendSavedEventArgs {Id=Friend.Id, DisplayMember=$"{Friend.FirstName} {Friend.LastName}"});
         }
 
@@ -44,10 +64,7 @@ namespace FriendOrganizer.UI.ViewModel
             await LoadAsync(friendId);
         }
 
-        public async Task LoadAsync(int friendId)
-        {
-            Friend = await dataService.GetByIdAsync(friendId);
-        }
+
 
         public Task<Friend> GetByIdAsync(int friendId)
         {
@@ -59,16 +76,5 @@ namespace FriendOrganizer.UI.ViewModel
             throw new NotImplementedException();
         }
 
-        public Friend Friend
-        {
-            get { return friend; }
-            private set
-            {
-                friend = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand SaveCommand { get; }
     }
 }
