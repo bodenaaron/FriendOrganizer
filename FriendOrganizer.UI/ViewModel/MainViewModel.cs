@@ -1,23 +1,20 @@
-﻿using FriendOrganizer.Model;
-using FriendOrganizer.UI.Data;
-using FriendOrganizer.UI.Event;
+﻿using FriendOrganizer.UI.Event;
+using FriendOrganizer.UI.View.Services;
 using Prism.Events;
 using System;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace FriendOrganizer.UI.ViewModel
 {
     public class MainViewModel:ViewModelBase
     {
         private IFriendDetailViewModel friendDetailViewModel;
-        public MainViewModel(INavigationViewModel navigationViewModel, Func<IFriendDetailViewModel> friendDetailViewModelCreator, IEventAggregator eventAggregator)
+        public MainViewModel(INavigationViewModel navigationViewModel, Func<IFriendDetailViewModel> friendDetailViewModelCreator, IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
         {
             
             this.friendDetailViewModelCreator = friendDetailViewModelCreator;
             this.eventAggregator = eventAggregator;
-
+            this.messageDialogService = messageDialogService;
             this.eventAggregator.GetEvent<OpenFriendDetailViewEvent>().Subscribe(OnOpenFriendDetailView);
 
             NavigationViewModel = navigationViewModel;
@@ -42,13 +39,14 @@ namespace FriendOrganizer.UI.ViewModel
 
 
         private IEventAggregator eventAggregator;
+        private IMessageDialogService messageDialogService;
 
         private async void OnOpenFriendDetailView(int friendId)
         {
             if (FriendDetailViewModel != null && FriendDetailViewModel.HasChanges)
             {
-                var result = MessageBox.Show("Änderungen nicht gespeichert, ohne speichern fortfahren?","Nicht gespeicherte Änderungen",MessageBoxButton.OKCancel);
-                if (result==MessageBoxResult.Cancel)
+                var result = messageDialogService.ShowOkCancelDialog("Änderungen nicht gespeichert, ohne speichern fortfahren?", "Nicht gespeicherte Änderungen");
+                if (result==MessageDialogResult.Cancel)
                 {
                     return;
                 }
