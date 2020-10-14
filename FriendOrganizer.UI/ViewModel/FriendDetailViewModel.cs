@@ -33,6 +33,7 @@ namespace FriendOrganizer.UI.ViewModel
         }
 
         public ICommand SaveCommand { get; }
+        public ICommand DeleteCommand { get; }
 
         public async Task LoadAsync(int? friendId)
         {
@@ -69,7 +70,14 @@ namespace FriendOrganizer.UI.ViewModel
             
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
+            DeleteCommand = new DelegateCommand(OnDeleteExecute);
         }
+
+        private async void OnDeleteExecute()
+        {
+            friendRepository.Remove(Friend.Model);
+            await friendRepository.SaveAsync();
+        }        
 
         private async void OnSaveExecute()
         {
