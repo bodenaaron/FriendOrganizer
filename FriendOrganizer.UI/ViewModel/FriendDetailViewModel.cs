@@ -20,6 +20,7 @@ namespace FriendOrganizer.UI.ViewModel
         private IFriendRepository friendRepository;
         private IEventAggregator eventAggregator;
         private FriendWrapper friend;
+        private bool hasChanges;
 
         public FriendWrapper Friend
         {
@@ -40,6 +41,10 @@ namespace FriendOrganizer.UI.ViewModel
             Friend = new FriendWrapper(friend);
             Friend.PropertyChanged += (s, e) =>
             {
+                if (!HasChanges)
+                {
+                    HasChanges = friendRepository.HasChanges();
+                }
                 if (e.PropertyName == nameof(Friend.HasErrors))
                 {
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
@@ -60,18 +65,31 @@ namespace FriendOrganizer.UI.ViewModel
         private async void OnSaveExecute()
         {
            await friendRepository.SaveAsync();
+            HasChanges = friendRepository.HasChanges();
             eventAggregator.GetEvent<AfterFriendSavedEvent>().Publish(new AfterFriendSavedEventArgs {Id=Friend.Id, DisplayMember=$"{Friend.FirstName} {Friend.LastName}"});
         }
 
         private bool OnSaveCanExecute()
         {
 
-            return Friend!=null&&!Friend.HasErrors;
+            return Friend!=null&&!Friend.HasErrors && HasChanges;
         }
 
         
 
-
+        public bool HasChanges
+        {
+            get { return hasChanges; }
+            set
+            {
+                if (hasChanges != value)
+                {
+                    hasChanges = value; 
+                    OnPropertyChanged(); 
+                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                }
+            }            
+        }
 
         public Task<Friend> GetByIdAsync(int friendId)
         {
