@@ -3,6 +3,7 @@ using FriendOrganizer.Model;
 using FriendOrganizer.UI.Data;
 using FriendOrganizer.UI.Data.Repositories;
 using FriendOrganizer.UI.Event;
+using FriendOrganizer.UI.View.Services;
 using FriendOrganizer.UI.Wrapper;
 using Prism.Commands;
 using Prism.Events;
@@ -19,6 +20,7 @@ namespace FriendOrganizer.UI.ViewModel
     {
         private IFriendRepository friendRepository;
         private IEventAggregator eventAggregator;
+        private IMessageDialogService messageDialogService;
         private FriendWrapper friend;
         private bool hasChanges;
 
@@ -63,11 +65,11 @@ namespace FriendOrganizer.UI.ViewModel
 
         
 
-        public FriendDetailViewModel(IFriendRepository friendRepository, IEventAggregator eventAggregator)
+        public FriendDetailViewModel(IFriendRepository friendRepository, IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
         {
             this.friendRepository = friendRepository;
             this.eventAggregator = eventAggregator;
-            
+            this.messageDialogService = messageDialogService;
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
@@ -75,9 +77,13 @@ namespace FriendOrganizer.UI.ViewModel
 
         private async void OnDeleteExecute()
         {
-            friendRepository.Remove(Friend.Model);
-            await friendRepository.SaveAsync();
-            eventAggregator.GetEvent<AfterFriendDeletedEvent>().Publish(Friend.Id);
+            var result = messageDialogService.ShowOkCancelDialog($"{Friend.FirstName} {Friend.LastName} wirklich löschen?","Wirklich löschen?");
+            if (result == MessageDialogResult.OK)
+            {
+                friendRepository.Remove(Friend.Model);
+                await friendRepository.SaveAsync();
+                eventAggregator.GetEvent<AfterFriendDeletedEvent>().Publish(Friend.Id);
+            }            
         }        
 
         private async void OnSaveExecute()
