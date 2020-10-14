@@ -42,25 +42,11 @@ namespace FriendOrganizer.UI.ViewModel
             Friends.Clear();
             foreach (var item in lookup)
             {
-                Friends.Add(new NavigationItemViewModel(item.Id,item.DisplayMember));
+                Friends.Add(new NavigationItemViewModel(item.Id,item.DisplayMember, eventAggregator));
             }
         }
 
-        private NavigationItemViewModel selectedFriend;
-
-        public NavigationItemViewModel SelectedFriend
-        {
-            get { return selectedFriend; }
-            set
-            {
-                selectedFriend = value;
-                OnPropertyChanged();
-                if (selectedFriend != null)
-                {
-                    eventAggregator.GetEvent<OpenFriendDetailViewEvent>().Publish(selectedFriend.Id);
-                }
-            }
-        }
+       
 
     }
 }
