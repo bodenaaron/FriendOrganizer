@@ -77,6 +77,7 @@ namespace FriendOrganizer.UI.ViewModel
         {
             friendRepository.Remove(Friend.Model);
             await friendRepository.SaveAsync();
+            eventAggregator.GetEvent<AfterFriendDeletedEvent>().Publish(Friend.Id);
         }        
 
         private async void OnSaveExecute()
