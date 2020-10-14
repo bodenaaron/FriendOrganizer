@@ -21,6 +21,11 @@ namespace FriendOrganizer.UI.Data.Repositories
             return await context.Friends.SingleAsync(f => f.Id == friendId);
         }
 
+        public bool HasChanges()
+        {
+            return context.ChangeTracker.HasChanges();
+        }
+
         public async Task SaveAsync()
         {
             await context.SaveChangesAsync();
