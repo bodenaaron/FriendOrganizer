@@ -34,9 +34,11 @@ namespace FriendOrganizer.UI.ViewModel
 
         public ICommand SaveCommand { get; }
 
-        public async Task LoadAsync(int friendId)
+        public async Task LoadAsync(int? friendId)
         {
-            var friend = await friendRepository.GetByIdAsync(friendId);
+            var friend = friendId.HasValue
+               ? await friendRepository.GetByIdAsync(friendId.Value)
+               :CreateNewFriend();
 
             Friend = new FriendWrapper(friend);
             Friend.PropertyChanged += (s, e) =>
@@ -52,6 +54,8 @@ namespace FriendOrganizer.UI.ViewModel
             };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
         }
+
+        
 
         public FriendDetailViewModel(IFriendRepository friendRepository, IEventAggregator eventAggregator)
         {
@@ -101,5 +105,11 @@ namespace FriendOrganizer.UI.ViewModel
             throw new NotImplementedException();
         }
 
+        private Friend CreateNewFriend()
+        {
+            var friend = new Friend();
+            friendRepository.Add(friend);
+            return friend;
+        }
     }
 }
