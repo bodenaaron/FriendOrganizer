@@ -5,6 +5,7 @@ using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace FriendOrganizer.UI.ViewModel
 {
@@ -44,8 +45,17 @@ namespace FriendOrganizer.UI.ViewModel
 
         private async void OnOpenFriendDetailView(int friendId)
         {
+            if (FriendDetailViewModel != null && FriendDetailViewModel.HasChanges)
+            {
+                var result = MessageBox.Show("Änderungen nicht gespeichert, ohne speichern fortfahren?","Nicht gespeicherte Änderungen",MessageBoxButton.OKCancel);
+                if (result==MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+            }
             FriendDetailViewModel = friendDetailViewModelCreator();
             await FriendDetailViewModel.LoadAsync(friendId);
+
         }
     }
 }
