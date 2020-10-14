@@ -53,6 +53,11 @@ namespace FriendOrganizer.UI.ViewModel
                 }
             };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+            if (Friend.Id == 0)
+            {
+                //Validierung auslösen
+                Friend.FirstName = "";
+            }
         }
 
         
