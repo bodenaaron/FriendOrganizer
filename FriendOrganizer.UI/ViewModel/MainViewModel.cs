@@ -1,26 +1,51 @@
 ﻿using FriendOrganizer.Model;
 using FriendOrganizer.UI.Data;
+using FriendOrganizer.UI.Event;
+using Prism.Events;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.ViewModel
 {
     public class MainViewModel:ViewModelBase
-    {        
-
-        public MainViewModel(INavigationViewModel navigationViewModel, IFriendDetailViewModel friendDetailViewModel)
+    {
+        private IFriendDetailViewModel friendDetailViewModel;
+        public MainViewModel(INavigationViewModel navigationViewModel, Func<IFriendDetailViewModel> friendDetailViewModelCreator, IEventAggregator eventAggregator)
         {
+            
+            this.friendDetailViewModelCreator = friendDetailViewModelCreator;
+            this.eventAggregator = eventAggregator;
+
+            this.eventAggregator.GetEvent<OpenFriendDetailViewEvent>().Subscribe(OnOpenFriendDetailView);
+
             NavigationViewModel = navigationViewModel;
-            FriendDetailViewModel = friendDetailViewModel;
         }
 
         public INavigationViewModel NavigationViewModel { get;}
+
+        private Func<IFriendDetailViewModel> friendDetailViewModelCreator;
 
         public async Task LoadAsync()
         {
             await NavigationViewModel.LoadAsync();
         }
 
-        public IFriendDetailViewModel FriendDetailViewModel { get;}
+        
+
+        public IFriendDetailViewModel FriendDetailViewModel
+        {
+            get { return friendDetailViewModel; }
+            private set { friendDetailViewModel = value; OnPropertyChanged(); }
+        }
+
+
+        private IEventAggregator eventAggregator;
+
+        private async void OnOpenFriendDetailView(int friendId)
+        {
+            FriendDetailViewModel = friendDetailViewModelCreator();
+            await FriendDetailViewModel.LoadAsync(friendId);
+        }
     }
 }

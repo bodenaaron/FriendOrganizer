@@ -51,6 +51,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FriendOrganizerDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FriendOrganizerDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="FriendOrganizerDbContext.cs" />
     <Compile Include="Migrations\202009240852237_INitalDB.cs" />
     <Compile Include="Migrations\202009240852237_INitalDB.designer.cs">
@@ -58,6 +63,11 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FriendOrganizer.Model\FriendOrganizer.Model.csproj">
@@ -67,7 +77,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="FriendOrganizerDataSet.xsc">
+      <DependentUpon>FriendOrganizerDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="FriendOrganizerDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>FriendOrganizerDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="FriendOrganizerDataSet.xss">
+      <DependentUpon>FriendOrganizerDataSet.xsd</DependentUpon>
+    </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202009240852237_INitalDB.resx">

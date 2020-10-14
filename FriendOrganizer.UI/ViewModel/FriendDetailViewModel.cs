@@ -52,7 +52,7 @@ namespace FriendOrganizer.UI.ViewModel
         {
             this.friendRepository = friendRepository;
             this.eventAggregator = eventAggregator;
-            this.eventAggregator.GetEvent<OpenFriendDetailViewEvent>().Subscribe(OnOpenFriendDetailView);
+            
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
@@ -69,10 +69,7 @@ namespace FriendOrganizer.UI.ViewModel
             return Friend!=null&&!Friend.HasErrors;
         }
 
-        private async void OnOpenFriendDetailView(int friendId)
-        {
-            await LoadAsync(friendId);
-        }
+        
 
 
 
