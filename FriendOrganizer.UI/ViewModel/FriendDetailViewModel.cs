@@ -19,6 +19,8 @@ namespace FriendOrganizer.UI.ViewModel
         private IEventAggregator eventAggregator;
         private Friend friend;
 
+        public TimeSpan test = TimeSpan.Parse("8:00");
+
         public FriendDetailViewModel(IFriendDataService dataService, IEventAggregator eventAggregator)
         {
             this.dataService = dataService;

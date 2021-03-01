@@ -20,7 +20,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Content="Firstname" Margin="10 10 10 0"/>
-        <TextBox Grid.Row="1" Text="{Binding Friend.FirstName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
+        <TextBox Grid.Row="1" Text="{Binding test}" Margin="10 0 10 10"/>
 
         <Label Grid.Row="2" Content="Lastname" Margin="10 0 "/>
         <TextBox Grid.Row="3" Text="{Binding Friend.LastName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
