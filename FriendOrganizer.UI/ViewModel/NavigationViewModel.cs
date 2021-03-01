@@ -1,5 +1,7 @@
 ﻿using FriendOrganizer.Model;
 using FriendOrganizer.UI.Data;
+using FriendOrganizer.UI.Data.Lookups;
+using FriendOrganizer.UI.Data.Repositories;
 using FriendOrganizer.UI.Event;
 using Prism.Events;
 using System;
@@ -15,7 +17,7 @@ namespace FriendOrganizer.UI.ViewModel
     {
         public IFriendLookupDataService friendLookupService;
 
-        public ObservableCollection<LookupItem> Friends { get; }
+        public ObservableCollection<NavigationItemViewModel> Friends { get; }
 
         private IEventAggregator eventAggregator;
 
@@ -23,9 +25,13 @@ namespace FriendOrganizer.UI.ViewModel
         {
             this.friendLookupService = friendLookupService;
             this.eventAggregator = eventAggregator;
-            Friends = new ObservableCollection<LookupItem>();
+            Friends = new ObservableCollection<NavigationItemViewModel>();
+            eventAggregator.GetEvent<AfterFriendSavedEvent>().Subscribe(AfterFriendSaved);
+            eventAggregator.GetEvent<AfterFriendDeletedEvent>().Subscribe(AfterFriendDeleted);
             
         }
+
+        
 
         public async Task LoadAsync()
         {
@@ -33,25 +39,31 @@ namespace FriendOrganizer.UI.ViewModel
             Friends.Clear();
             foreach (var item in lookup)
             {
-                Friends.Add(item);
+                Friends.Add(new NavigationItemViewModel(item.Id,item.DisplayMember, eventAggregator));
             }
         }
-
-        private LookupItem selectedFriend;
-
-        public LookupItem SelectedFriend
+        private void AfterFriendDeleted(int friendId)
         {
-            get { return selectedFriend; }
-            set
+            var friend = Friends.SingleOrDefault(f => f.Id == friendId);
+            if (friend != null)
             {
-                selectedFriend = value;
-                OnPropertyChanged();
-                if (selectedFriend != null)
-                {
-                    eventAggregator.GetEvent<OpenFriendDetailViewEvent>().Publish(selectedFriend.Id);
-                }
+                Friends.Remove(friend);
             }
         }
+
+        private void AfterFriendSaved(AfterFriendSavedEventArgs obj)
+        {
+            var lookupItem = Friends.SingleOrDefault(l => l.Id == obj.Id);
+            if (lookupItem == null)
+            {
+                Friends.Add(new NavigationItemViewModel(obj.Id, obj.DisplayMember, eventAggregator));
+            }
+            else
+            {
+                lookupItem.DisplayMember = obj.DisplayMember;
+            }
+        }
+
 
     }
 }
